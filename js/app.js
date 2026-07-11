@@ -44,14 +44,14 @@
     box.innerHTML = '';
     var last = Store.getLast();
     if (last && last.cfg) {
-      box.appendChild(makeTile(last.name || 'Ostatni trening', 'Twój ostatni trening — stuknij i START',
-        function () { openConfig(cloneCfg(last.cfg), last.name || 'Ostatni trening'); }, 'last'));
+      box.appendChild(makeTile(last.name || 'Ostatni trening', 'Stuknij i START — konfiguracja czeka',
+        function () { openConfig(cloneCfg(last.cfg), last.name || 'Ostatni trening'); }, 'last', last.cfg));
     }
     Presets.forEach(function (p) {
-      box.appendChild(makeTile(p.name, p.desc, function () { openConfig(cloneCfg(p.cfg), p.name); }));
+      box.appendChild(makeTile(p.name, p.desc, function () { openConfig(cloneCfg(p.cfg), p.name); }, '', p.cfg));
     });
     Store.getTemplates().forEach(function (t, i) {
-      var tile = makeTile('⭐ ' + t.name, 'Własny szablon', function () { openConfig(cloneCfg(t.cfg), t.name); });
+      var tile = makeTile(t.name, 'Własny szablon', function () { openConfig(cloneCfg(t.cfg), t.name); }, '', t.cfg);
       var del = document.createElement('button');
       del.className = 't-del'; del.textContent = 'usuń';
       del.addEventListener('click', function (e) {
@@ -63,12 +63,24 @@
       box.appendChild(tile);
     });
   }
-  function makeTile(name, desc, onTap, extra) {
+  function makeTile(name, desc, onTap, extra, tileCfg) {
     var b = document.createElement('button');
     b.className = 'tile' + (extra ? ' ' + extra : '');
-    b.innerHTML = '<span class="t-name"></span><span class="t-desc"></span>';
+    b.innerHTML = '<span class="t-name"></span><span class="t-desc"></span>' +
+      '<span class="t-meta"><span class="t-strip"></span><span class="t-dur"></span></span>';
     b.querySelector('.t-name').textContent = name;
     b.querySelector('.t-desc').textContent = desc;
+    if (tileCfg) {
+      var segs = IntervalEngine.buildSegments(tileCfg);
+      b.querySelector('.t-dur').textContent = fmtTotal(IntervalEngine.totalPlanned(segs));
+      var strip = b.querySelector('.t-strip');
+      segs.slice(0, 40).forEach(function (seg) {
+        var i = document.createElement('i');
+        i.className = seg.kind;
+        i.style.flexGrow = IntervalEngine.plannedDur(seg);
+        strip.appendChild(i);
+      });
+    }
     b.addEventListener('click', onTap);
     return b;
   }
@@ -93,30 +105,39 @@
     d.className = 'station';
     d.innerHTML =
       '<div class="st-top">' +
-        '<input type="text" placeholder="Nazwa ćwiczenia (stacja ' + (i + 1) + ')" maxlength="30">' +
-        '<button class="st-type"></button>' +
+        '<span class="st-badge">' + (i + 1) + '</span>' +
+        '<input type="text" placeholder="Nazwa ćwiczenia" maxlength="30">' +
         (cfg.stations.length > 1 ? '<button class="st-del" aria-label="Usuń">✕</button>' : '') +
+      '</div>' +
+      '<div class="seg">' +
+        '<button data-t="time">Na czas<small>stała długość</small></button>' +
+        '<button data-t="reps">Na powtórzenia<small>Ty kończysz stację</small></button>' +
       '</div>' +
       '<div class="st-fields"></div>';
     var nameIn = d.querySelector('input');
     nameIn.value = st.name;
     nameIn.addEventListener('input', function () { st.name = nameIn.value; renderTimeline(); });
-    var typeBtn = d.querySelector('.st-type');
-    function paintType() {
-      typeBtn.textContent = st.type === 'reps' ? 'Na powtórzenia' : 'Na czas';
-      typeBtn.classList.toggle('reps', st.type === 'reps');
-    }
-    paintType();
-    typeBtn.addEventListener('click', function () {
-      st.type = st.type === 'reps' ? 'time' : 'reps';
-      paintType(); renderConfig();
+    d.querySelectorAll('.seg button').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.t === st.type);
+      b.addEventListener('click', function () {
+        if (st.type === b.dataset.t) return;
+        st.type = b.dataset.t;
+        renderConfig();
+      });
     });
     var delBtn = d.querySelector('.st-del');
     if (delBtn) delBtn.addEventListener('click', function () {
       cfg.stations.splice(i, 1); renderConfig();
     });
     var fields = d.querySelector('.st-fields');
-    if (st.type === 'time') fields.appendChild(stField('Praca (s)', st.work, 5, 1, 3600, function (v) { st.work = v; }));
+    if (st.type === 'time') {
+      fields.appendChild(stField('Praca (s)', st.work, 5, 1, 3600, function (v) { st.work = v; }));
+    } else {
+      var note = document.createElement('div');
+      note.className = 'st-reps-note';
+      note.textContent = 'Stacja trwa, aż stukniesz ZROBIONE — dopiero wtedy zaczyna się przerwa.';
+      fields.appendChild(note);
+    }
     fields.appendChild(stField('Przerwa (s)', st.rest, 5, 0, 600, function (v) { st.rest = v; }));
     return d;
   }
@@ -162,7 +183,7 @@
   function renderTimeline() {
     var segs = IntervalEngine.buildSegments(cfg);
     var total = IntervalEngine.totalPlanned(segs);
-    $('tl-total').textContent = '— ' + fmtTotal(total);
+    $('tl-total').textContent = fmtTotal(total);
     var tl = $('timeline-preview');
     tl.innerHTML = '';
     segs.forEach(function (seg, i) {
@@ -355,7 +376,7 @@
     var pct = snap.totalSec > 0 ? (snap.overallSec / snap.totalSec) * 100 : 0;
     $('mini-marker').style.left = 'calc(' + pct.toFixed(2) + '% - 2px)';
 
-    $('btn-pause').textContent = snap.paused ? '▶' : '⏸';
+    $('btn-pause').classList.toggle('is-paused', !!snap.paused);
   }
 
   function renderMiniTimeline() {
@@ -578,6 +599,10 @@
   /* ══════════ NAWIGACJA / START ══════════ */
   $('btn-new').addEventListener('click', function () {
     openConfig({ prep: 10, rounds: 3, stations: [{ name: '', type: 'time', work: 30, rest: 15 }] }, '');
+  });
+  $('btn-add-station').addEventListener('click', function () {
+    cfg.stations.push({ name: '', type: 'time', work: 30, rest: 15 });
+    renderConfig();
   });
   $('btn-cfg-back').addEventListener('click', function () { renderHome(); show('home'); });
   $('btn-save-tpl').addEventListener('click', function () {

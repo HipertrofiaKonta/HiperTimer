@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Timer Interwałowy</title>
-<meta name="theme-color" content="#111418">
+<meta name="theme-color" content="#0a0d12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Timer">
@@ -15,55 +15,84 @@
 </head>
 <body class="state-idle">
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-gear" viewBox="0 0 24 24"><path d="M10.83 2.6a1.5 1.5 0 0 1 2.34 0l1.06 1.32c.3.37.77.55 1.24.48l1.67-.26a1.5 1.5 0 0 1 1.72 1.58l-.12 1.69c-.03.47.2.92.6 1.17l1.43.9a1.5 1.5 0 0 1 .4 2.3l-1.1 1.29c-.3.36-.39.85-.22 1.3l.6 1.58a1.5 1.5 0 0 1-1.17 2.02l-1.66.28c-.47.08-.85.42-1 .87l-.53 1.6a1.5 1.5 0 0 1-2.2.8l-1.45-.88a1.28 1.28 0 0 0-1.32 0l-1.45.88a1.5 1.5 0 0 1-2.2-.8l-.53-1.6c-.15-.45-.53-.79-1-.87l-1.66-.28a1.5 1.5 0 0 1-1.17-2.02l.6-1.58c.17-.45.08-.94-.22-1.3l-1.1-1.29a1.5 1.5 0 0 1 .4-2.3l1.43-.9c.4-.25.63-.7.6-1.17l-.12-1.69a1.5 1.5 0 0 1 1.72-1.58l1.67.26c.47.07.94-.11 1.24-.48l1.06-1.32ZM12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5v5c0 .8.7 1.5 1.5 1.5h2l4.3 3.4c.7.5 1.7 0 1.7-.8V5.4c0-.8-1-1.3-1.7-.8L7.5 8h-2C4.7 8 4 8.7 4 9.5Z"/><path d="M16.2 8.4a5 5 0 0 1 0 7.2M18.8 6a8.4 8.4 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="5.5" y="4" width="4.6" height="16" rx="1.6"/><rect x="13.9" y="4" width="4.6" height="16" rx="1.6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7.5 4.9v14.2c0 1 1.1 1.6 1.9 1l11-7.1c.8-.5.8-1.7 0-2.2L9.4 3.9c-.8-.5-1.9.1-1.9 1Z"/></symbol>
+    <symbol id="i-skip" viewBox="0 0 24 24"><path d="M5 5.8v12.4c0 .9 1 1.5 1.8 1l9.4-6.2c.7-.5.7-1.6 0-2L6.8 4.8c-.8-.5-1.8.1-1.8 1Z"/><rect x="17.4" y="5" width="2.9" height="14" rx="1.3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.4 2.2 4.6 13.1c-.5.6 0 1.5.8 1.5h4.9l-1.6 6.6c-.2.9.9 1.4 1.5.7l8.8-10.9c.5-.6 0-1.5-.8-1.5h-4.9l1.6-6.6c.2-.9-.9-1.4-1.5-.7Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v2h3.5c0 3.6-2 6-4.7 6.6A6 6 0 0 1 13 14.9V17h3a1.5 1.5 0 0 1 1.5 1.5V21h-11v-2.5A1.5 1.5 0 0 1 8 17h3v-2.1a6 6 0 0 1-2.8-3.3C5.5 11 3.5 8.6 3.5 5H7V3Zm-1.4 4H3.9c.4 1.7 1.4 3 2.7 3.5A9.6 9.6 0 0 1 5.6 7Zm12.8 0a9.6 9.6 0 0 1-1 3.5c1.3-.5 2.3-1.8 2.7-3.5h-1.7Z"/></symbol>
+  </defs>
+</svg>
+
 <!-- ══════════ EKRAN GŁÓWNY ══════════ -->
 <section id="screen-home" class="screen">
   <header class="home-head">
-    <h1>Timer Interwałowy</h1>
-    <button id="btn-settings" class="icon-btn" aria-label="Ustawienia">⚙</button>
+    <div class="brand">
+      <span class="brand-mark"><svg class="ic"><use href="#i-bolt"/></svg></span>
+      <div>
+        <h1>Timer Interwałowy</h1>
+        <p class="brand-sub">Obwody · Tabata · EMOM · AMRAP</p>
+      </div>
+    </div>
+    <button id="btn-settings" class="icon-btn" aria-label="Ustawienia"><svg class="ic"><use href="#i-gear"/></svg></button>
   </header>
   <div id="home-tiles" class="tiles"></div>
   <div class="home-foot">
-    <button id="btn-new" class="btn ghost">＋ Nowy trening</button>
+    <button id="btn-new" class="btn ghost dashed"><svg class="ic sm"><use href="#i-plus"/></svg> Nowy trening</button>
   </div>
 </section>
 
 <!-- ══════════ KONFIGURACJA ══════════ -->
 <section id="screen-config" class="screen hidden">
   <header class="cfg-head">
-    <button id="btn-cfg-back" class="icon-btn" aria-label="Wstecz">‹</button>
+    <button id="btn-cfg-back" class="icon-btn" aria-label="Wstecz"><svg class="ic"><use href="#i-back"/></svg></button>
     <input id="cfg-name" type="text" placeholder="Nazwa treningu" maxlength="30">
-    <button id="btn-sound-test" class="icon-btn" aria-label="Test dźwięku">🔊</button>
+    <button id="btn-sound-test" class="icon-btn" aria-label="Test dźwięku"><svg class="ic"><use href="#i-sound"/></svg></button>
   </header>
 
   <div class="cfg-body">
-    <div class="cfg-row">
-      <label>Rundy</label>
-      <div class="stepper" data-field="rounds">
-        <button class="step-btn" data-d="-1">−</button>
-        <input type="number" inputmode="numeric" min="1" max="99" value="3">
-        <button class="step-btn" data-d="1">＋</button>
+    <div class="card">
+      <div class="cfg-row">
+        <label>Rundy</label>
+        <div class="stepper" data-field="rounds">
+          <button class="step-btn" data-d="-1">−</button>
+          <input type="number" inputmode="numeric" min="1" max="99" value="3">
+          <button class="step-btn" data-d="1">＋</button>
+        </div>
       </div>
-    </div>
-    <div class="cfg-row">
-      <label>Przygotowanie (s)</label>
-      <div class="stepper" data-field="prep">
-        <button class="step-btn" data-d="-5">−</button>
-        <input type="number" inputmode="numeric" min="0" max="60" value="10">
-        <button class="step-btn" data-d="5">＋</button>
+      <div class="cfg-row">
+        <label>Przygotowanie <span class="unit">s</span></label>
+        <div class="stepper" data-field="prep">
+          <button class="step-btn" data-d="-5">−</button>
+          <input type="number" inputmode="numeric" min="0" max="60" value="10">
+          <button class="step-btn" data-d="5">＋</button>
+        </div>
       </div>
     </div>
 
     <h2 class="cfg-sub">Stacje</h2>
     <div id="station-list"></div>
-    <button id="btn-add-station" class="btn ghost small">＋ Dodaj stację</button>
+    <button id="btn-add-station" class="btn ghost dashed small"><svg class="ic sm"><use href="#i-plus"/></svg> Dodaj stację</button>
 
-    <h2 class="cfg-sub">Podgląd sesji <span id="tl-total"></span></h2>
-    <p class="hint">Przytrzymaj blok, aby szybko zmienić jego czas. Przesuń palcem, aby podświetlić kolejną stację.</p>
-    <div id="timeline-preview" class="timeline"></div>
+    <h2 class="cfg-sub">Podgląd sesji</h2>
+    <div class="card tl-card">
+      <div class="tl-meta">
+        <span class="tl-chip" id="tl-total"></span>
+        <span class="tl-legend"><i class="dot work"></i>praca <i class="dot rest"></i>przerwa <i class="dot prep"></i>start</span>
+      </div>
+      <div id="timeline-preview" class="timeline"></div>
+      <p class="hint">Przytrzymaj blok, aby zmienić jego czas · przesuń palcem, aby podświetlać stacje</p>
+    </div>
   </div>
 
   <div class="cfg-foot">
-    <button id="btn-save-tpl" class="btn ghost">Zapisz szablon</button>
+    <button id="btn-save-tpl" class="btn ghost">Zapisz<br>szablon</button>
     <button id="btn-start" class="btn primary big">START</button>
   </div>
 </section>
@@ -86,18 +115,21 @@
     <div id="mini-timeline" class="mini-timeline"><div id="mini-marker" class="mini-marker"></div></div>
 
     <div id="wo-controls" class="wo-controls">
-      <button id="btn-pause" class="ctl-btn" aria-label="Pauza">⏸</button>
-      <button id="btn-plus30" class="ctl-btn">+30 s</button>
+      <button id="btn-pause" class="ctl-btn" aria-label="Pauza">
+        <svg class="ic i-pause"><use href="#i-pause"/></svg>
+        <svg class="ic i-play"><use href="#i-play"/></svg>
+      </button>
+      <button id="btn-plus30" class="ctl-btn wide">+30 s</button>
       <button id="btn-done" class="ctl-btn done hidden">ZROBIONE ✓</button>
-      <button id="btn-skip" class="ctl-btn" aria-label="Pomiń">⏭</button>
-      <button id="btn-lock" class="ctl-btn lock" aria-label="Blokada">🔓</button>
+      <button id="btn-skip" class="ctl-btn" aria-label="Pomiń"><svg class="ic"><use href="#i-skip"/></svg></button>
+      <button id="btn-lock" class="ctl-btn" aria-label="Blokada"><svg class="ic"><use href="#i-lock"/></svg></button>
     </div>
     <button id="btn-abort" class="wo-abort">Zakończ trening</button>
   </div>
 
   <div id="lock-overlay" class="lock-overlay hidden">
-    <div class="lock-msg">🔒 Ekran zablokowany</div>
-    <button id="btn-unlock" class="btn unlock-btn">Przytrzymaj 1 s, aby odblokować</button>
+    <div class="lock-msg"><svg class="ic sm"><use href="#i-lock"/></svg> Ekran zablokowany</div>
+    <button id="btn-unlock" class="btn unlock-btn"><span class="unlock-fill"></span><span class="unlock-label">Przytrzymaj 1 s, aby odblokować</span></button>
   </div>
 
   <div id="wakelock-banner" class="banner hidden">⚠ Ekran może zgasnąć — wyłącz oszczędzanie baterii</div>
@@ -105,18 +137,23 @@
 
 <!-- ══════════ PODSUMOWANIE ══════════ -->
 <section id="screen-summary" class="screen hidden">
-  <h1 class="sum-title">Trening ukończony 💪</h1>
+  <div class="sum-hero">
+    <span class="sum-badge"><svg class="ic lg"><use href="#i-trophy"/></svg></span>
+    <h1 class="sum-title">Trening<br>ukończony</h1>
+  </div>
   <div class="sum-grid">
-    <div class="sum-cell"><span id="sum-total">–</span><label>łącznie</label></div>
+    <div class="sum-cell main"><span id="sum-total">–</span><label>czas łącznie</label></div>
     <div class="sum-cell"><span id="sum-work">–</span><label>praca</label></div>
     <div class="sum-cell"><span id="sum-rest">–</span><label>przerwy</label></div>
     <div class="sum-cell"><span id="sum-rounds">–</span><label>rundy</label></div>
     <div class="sum-cell"><span id="sum-stations">–</span><label>stacje</label></div>
   </div>
   <div class="sum-foot">
-    <button id="btn-share" class="btn primary big">Udostępnij grafikę 📸</button>
-    <button id="btn-again" class="btn ghost">Jeszcze raz</button>
-    <button id="btn-home" class="btn ghost">Ekran główny</button>
+    <button id="btn-share" class="btn primary big">Udostępnij grafikę</button>
+    <div class="sum-row">
+      <button id="btn-again" class="btn ghost">Jeszcze raz</button>
+      <button id="btn-home" class="btn ghost">Ekran główny</button>
+    </div>
   </div>
   <canvas id="share-canvas" width="1080" height="1920" class="hidden"></canvas>
 </section>
@@ -124,41 +161,53 @@
 <!-- ══════════ USTAWIENIA ══════════ -->
 <section id="screen-settings" class="screen hidden">
   <header class="cfg-head">
-    <button id="btn-set-back" class="icon-btn" aria-label="Wstecz">‹</button>
+    <button id="btn-set-back" class="icon-btn" aria-label="Wstecz"><svg class="ic"><use href="#i-back"/></svg></button>
     <h1>Ustawienia</h1>
   </header>
   <div class="set-body">
-    <div class="set-row"><label>Kierunek wypełnienia (praca)</label>
-      <select id="set-filldir">
-        <option value="down">Opróżnia się w dół</option>
-        <option value="up">Opróżnia się w górę</option>
-      </select>
+    <h2 class="cfg-sub">Sygnały</h2>
+    <div class="card">
+      <div class="set-row"><label>Tryb głośnej siłowni<small>dłuższe, potrójne sygnały</small></label><input type="checkbox" class="switch" id="set-loud"></div>
+      <div class="set-row"><label>Zapowiedzi głosowe<small>po polsku, np. „Przerwa"</small></label><input type="checkbox" class="switch" id="set-voice"></div>
+      <div class="set-row"><label>Brzmienie sygnału</label>
+        <select id="set-soundset">
+          <option value="beep">Beep</option>
+          <option value="whistle">Gwizdek</option>
+          <option value="gong">Gong</option>
+        </select>
+      </div>
+      <div class="set-row" id="row-vibration"><label>Wibracje</label><input type="checkbox" class="switch" id="set-vibration"></div>
+      <button id="btn-set-test" class="btn ghost"><svg class="ic sm"><use href="#i-sound"/></svg> Sprawdź dźwięk</button>
     </div>
-    <div class="set-row"><label>Tryb głośnej siłowni</label><input type="checkbox" id="set-loud"></div>
-    <div class="set-row"><label>Zapowiedzi głosowe (PL)</label><input type="checkbox" id="set-voice"></div>
-    <div class="set-row"><label>Brzmienie sygnału</label>
-      <select id="set-soundset">
-        <option value="beep">Beep</option>
-        <option value="whistle">Gwizdek</option>
-        <option value="gong">Gong</option>
-      </select>
+
+    <h2 class="cfg-sub">Wygląd</h2>
+    <div class="card">
+      <div class="set-row"><label>Wypełnienie w trakcie pracy</label>
+        <select id="set-filldir">
+          <option value="down">Opróżnia się w dół</option>
+          <option value="up">Opróżnia się w górę</option>
+        </select>
+      </div>
     </div>
-    <div class="set-row" id="row-vibration"><label>Wibracje</label><input type="checkbox" id="set-vibration"></div>
-    <button id="btn-set-test" class="btn ghost">🔊 Sprawdź dźwięk</button>
 
     <h2 class="cfg-sub">Grafika udostępniania</h2>
-    <div class="set-row"><label>Nazwa firmy / trenera</label><input type="text" id="set-brandname" maxlength="30" placeholder="np. FitCoach Dawid"></div>
-    <div class="set-row"><label>Instagram</label><input type="text" id="set-brandinsta" maxlength="30" placeholder="np. @fitcoach"></div>
+    <div class="card">
+      <div class="set-row col"><label>Nazwa firmy / trenera</label><input type="text" id="set-brandname" maxlength="30" placeholder="np. FitCoach Dawid"></div>
+      <div class="set-row col"><label>Instagram</label><input type="text" id="set-brandinsta" maxlength="30" placeholder="np. @fitcoach"></div>
+    </div>
 
     <h2 class="cfg-sub">Aplikacja</h2>
-    <button id="btn-show-install" class="btn ghost">📲 Jak zainstalować na telefonie</button>
-    <div class="set-row" id="row-templates-clear"><label>Usuń wszystkie szablony</label><button id="btn-clear-tpl" class="btn ghost small">Usuń</button></div>
+    <div class="card">
+      <button id="btn-show-install" class="btn ghost">📲 Jak zainstalować na telefonie</button>
+      <div class="set-row"><label>Usuń wszystkie szablony</label><button id="btn-clear-tpl" class="btn ghost small danger">Usuń</button></div>
+    </div>
   </div>
 </section>
 
 <!-- ══════════ ONBOARDING / INSTALACJA ══════════ -->
 <div id="install-modal" class="modal hidden">
   <div class="modal-box">
+    <div class="grabber"></div>
     <h2>Zainstaluj na telefonie</h2>
     <div id="install-ios" class="hidden">
       <p>Na iPhonie (Safari):</p>
@@ -184,6 +233,7 @@
 <!-- edytor bloku timeline (long-press) -->
 <div id="block-editor" class="modal hidden">
   <div class="modal-box small">
+    <div class="grabber"></div>
     <h2 id="be-title">Czas bloku</h2>
     <div class="stepper big-stepper">
       <button id="be-minus" class="step-btn">−5 s</button>
